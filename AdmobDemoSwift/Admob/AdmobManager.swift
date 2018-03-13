@@ -60,7 +60,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         
         add(bannerView: bannerView, to: rootViewController.view)
         
-        configureChildViewFrame()
+        configureChildView()
         
         loadBannerView()
     }
@@ -108,7 +108,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         childViewController = nil
     }
     
-    private func configureChildViewFrame() {
+    private func configureChildView() {
         let childView = childViewController.view!
         let rootView = rootViewController.view!
         
