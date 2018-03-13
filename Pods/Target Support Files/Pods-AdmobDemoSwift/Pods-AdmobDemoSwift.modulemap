@@ -1,0 +1,6 @@
+framework module Pods_AdmobDemoSwift {
+  umbrella header "Pods-AdmobDemoSwift-umbrella.h"
+
+  export *
+  module * { export * }
+}
