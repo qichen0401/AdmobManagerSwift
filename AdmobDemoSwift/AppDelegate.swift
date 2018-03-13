@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         
-        AdmobManager.shared.setup(applicationID: "ca-app-pub-3940256099942544~1458002511", bannerAdUnitID: "ca-app-pub-3940256099942544/2934735716", bannerViewPosition: .bottom)
+        AdmobManager.shared.setup(applicationID: "ca-app-pub-3940256099942544~1458002511", bannerAdUnitID: "ca-app-pub-3940256099942544/2934735716",
+                                  interstitialAdUnitID: "ca-app-pub-3940256099942544/4411468910", bannerViewPosition: .bottom)
         
         AdmobManager.shared.start()
         

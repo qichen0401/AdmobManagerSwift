@@ -10,18 +10,20 @@
  to do:
  in debug mode, use test id
  return banner view on create small scrope
+ crash when interstitial is nil
  */
 
 import UIKit
 
 import Firebase
 
-class AdmobManager: NSObject, GADBannerViewDelegate {
+class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     
     static let shared = AdmobManager()
     
     private var applicationID = "ca-app-pub-3940256099942544~1458002511"
     private var bannerAdUnitID = "ca-app-pub-3940256099942544/2934735716"
+    private var interstitialAdUnitID = "ca-app-pub-3940256099942544/4411468910"
     
     private var bannerView: GADBannerView!
     private var bannerViewPosition: BannerViewPosition!
@@ -30,6 +32,8 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         case top
         case bottom
     }
+    
+    private var interstitial: GADInterstitial!
     
     private var rootViewController: UIViewController!
     private var childViewController: UIViewController!
@@ -42,12 +46,13 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         }
     }
     
-    
     func setup(applicationID: String,
                bannerAdUnitID: String,
+               interstitialAdUnitID: String,
                bannerViewPosition: BannerViewPosition = .bottom) {
         self.applicationID = applicationID
         self.bannerAdUnitID = bannerAdUnitID
+        self.interstitialAdUnitID = interstitialAdUnitID
         self.bannerViewPosition = bannerViewPosition
     }
     
@@ -63,6 +68,58 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         configureChildView()
         
         loadBannerView()
+        
+        createAndLoadInterstitial()
+    }
+    
+    func stop() {
+        UIView.animate(withDuration: 0.5, animations: { [unowned self] in
+            self.bannerView.alpha = 0
+        }, completion: { [unowned self] _ in
+            self.bannerView.removeFromSuperview()
+            
+            UIView.animate(withDuration: 0.5, animations: { [unowned self] in
+                let childView = self.childViewController.view!
+                let rootView = self.rootViewController.view!
+                
+                childView.removeConstraints(childView.constraints)
+                
+                rootView.addConstraint(NSLayoutConstraint(item: childView,
+                                                      attribute: .leading,
+                                                      relatedBy: .equal,
+                                                      toItem: rootView,
+                                                      attribute: .leading,
+                                                      multiplier: 1,
+                                                      constant: 0))
+                rootView.addConstraint(NSLayoutConstraint(item: childView,
+                                                          attribute: .trailing,
+                                                          relatedBy: .equal,
+                                                          toItem: rootView,
+                                                          attribute: .trailing,
+                                                          multiplier: 1,
+                                                          constant: 0))
+                rootView.addConstraint(NSLayoutConstraint(item: childView,
+                                                          attribute: .top,
+                                                          relatedBy: .equal,
+                                                          toItem: rootView,
+                                                          attribute: .top,
+                                                          multiplier: 1,
+                                                          constant: 0))
+                rootView.addConstraint(NSLayoutConstraint(item: childView,
+                                                          attribute: .bottom,
+                                                          relatedBy: .equal,
+                                                          toItem: rootView,
+                                                          attribute: .bottom,
+                                                          multiplier: 1,
+                                                          constant: 0))
+                rootView.layoutIfNeeded()
+            }, completion: { [unowned self] _ in
+                self.restoreViewHierarchy()
+                
+                self.bannerView = nil
+                self.interstitial = nil
+            })
+        })
     }
     
     // MARK: - Helper
@@ -182,18 +239,18 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
     
     // MARK: - Banner View
     
-    func createBannerView() {
+    private func createBannerView() {
         bannerView = GADBannerView(adSize: isPortrait ? kGADAdSizeSmartBannerPortrait : kGADAdSizeSmartBannerLandscape)
         bannerView.adUnitID = bannerAdUnitID
         bannerView.rootViewController = rootViewController
         bannerView.delegate = self
     }
     
-    func loadBannerView() {
+    private func loadBannerView() {
         bannerView.load(GADRequest())
     }
     
-    func add(bannerView: GADBannerView, to view: UIView) {
+    private func add(bannerView: GADBannerView, to view: UIView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bannerView)
         if #available(iOS 11.0, *) {
@@ -209,7 +266,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
     
     // MARK: - view positioning
     @available (iOS 11, *)
-    func position(_ bannerView: GADBannerView, fullWidthAtBottomOf safeAreaGuide: UILayoutGuide) {
+    private func position(_ bannerView: GADBannerView, fullWidthAtBottomOf safeAreaGuide: UILayoutGuide) {
         // Position the banner. Stick it to the bottom of the Safe Area.
         // Make it constrained to the edges of the safe area.
         var constraints = [safeAreaGuide.leftAnchor.constraint(equalTo: bannerView.leftAnchor),
@@ -225,7 +282,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func position(_ bannerView: GADBannerView, fullWidthAtBottomOf view: UIView) {
+    private func position(_ bannerView: GADBannerView, fullWidthAtBottomOf view: UIView) {
         view.addConstraint(NSLayoutConstraint(item: bannerView,
                                               attribute: .leading,
                                               relatedBy: .equal,
@@ -262,51 +319,40 @@ class AdmobManager: NSObject, GADBannerViewDelegate {
         }
     }
     
+    // MARK: - GADBannerViewDelegate
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /*
-    /// Tells the delegate an ad request loaded an ad.
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        print("adViewDidReceiveAd")
+        bannerView.alpha = 0
+        UIView.animate(withDuration: 1.0) {
+            bannerView.alpha = 1
+        }
     }
     
-    /// Tells the delegate an ad request failed.
-    func adView(_ bannerView: GADBannerView,
-                didFailToReceiveAdWithError error: GADRequestError) {
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
     }
     
-    /// Tells the delegate that a full-screen view will be presented in response
-    /// to the user clicking on an ad.
-    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
-        print("adViewWillPresentScreen")
+    // MARK: - Interstitial
+    
+    private func createAndLoadInterstitial() {
+        interstitial = GADInterstitial(adUnitID: interstitialAdUnitID)
+        interstitial.delegate = self
+        interstitial.load(GADRequest())
     }
     
-    /// Tells the delegate that the full-screen view will be dismissed.
-    func adViewWillDismissScreen(_ bannerView: GADBannerView) {
-        print("adViewWillDismissScreen")
+    func showInterstitial() {
+        if interstitial.isReady {
+            interstitial.present(fromRootViewController: rootViewController)
+        }
     }
     
-    /// Tells the delegate that the full-screen view has been dismissed.
-    func adViewDidDismissScreen(_ bannerView: GADBannerView) {
-        print("adViewDidDismissScreen")
+    // MARK: - GADInterstitialDelegate
+    
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        createAndLoadInterstitial()
     }
     
-    /// Tells the delegate that a user click will open another app (such as
-    /// the App Store), backgrounding the current app.
-    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-        print("adViewWillLeaveApplication")
+    func interstitial(_ ad: GADInterstitial, didFailToReceiveAdWithError error: GADRequestError) {
+        print("interstitial:didFailToReceiveAdWithError: \(error.localizedDescription)")
     }
- */
 }

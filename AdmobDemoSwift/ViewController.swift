@@ -20,7 +20,16 @@ class ViewController: UIViewController {
 //        AdmobManager.shared.setup()
         
     }
-
+    @IBAction func test2(_ sender: Any) {
+        AdmobManager.shared.showInterstitial()
+    }
+    @IBAction func show(_ sender: Any) {
+//        AdmobManager.shared.showInterstitial()
+        
+        
+        AdmobManager.shared.stop()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
