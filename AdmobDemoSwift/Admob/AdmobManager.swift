@@ -33,7 +33,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         case bottom
     }
     
-    private var interstitial: GADInterstitial!
+    private var interstitial: GADInterstitial?
     
     private var rootViewController: UIViewController!
     private var childViewController: UIViewController!
@@ -61,15 +61,15 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         
         GADMobileAds.configure(withApplicationID: applicationID)
         
-        createBannerView()
+        bannerView = createBannerView()
         
-        add(bannerView: bannerView, to: rootViewController.view)
+        add(bannerView, to: rootViewController)
         
         configureChildView()
         
-        loadBannerView()
+        load(bannerView)
         
-        createAndLoadInterstitial()
+        interstitial = createAndLoadInterstitial()
     }
     
     func stop() {
@@ -239,83 +239,71 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     
     // MARK: - Banner View
     
-    private func createBannerView() {
-        bannerView = GADBannerView(adSize: isPortrait ? kGADAdSizeSmartBannerPortrait : kGADAdSizeSmartBannerLandscape)
+    private func createBannerView() -> GADBannerView {
+        let bannerView = GADBannerView(adSize: isPortrait ? kGADAdSizeSmartBannerPortrait : kGADAdSizeSmartBannerLandscape)
         bannerView.adUnitID = bannerAdUnitID
-        bannerView.rootViewController = rootViewController
         bannerView.delegate = self
+        return bannerView
     }
     
-    private func loadBannerView() {
+    private func load(_ bannerView: GADBannerView) {
         bannerView.load(GADRequest())
     }
     
-    private func add(bannerView: GADBannerView, to view: UIView) {
+    private func add(_ bannerView: GADBannerView, to rootViewController: UIViewController) {
+        rootViewController.view.addSubview(bannerView)
+        bannerView.rootViewController = rootViewController
         bannerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(bannerView)
         if #available(iOS 11.0, *) {
-            // In iOS 11, we need to constrain the view to the safe area.
-            position(bannerView, fullWidthAtBottomOf: rootViewController.view.safeAreaLayoutGuide)
+            let safeAreaLayoutGuide = rootViewController.view.safeAreaLayoutGuide
+            var constraints = [safeAreaLayoutGuide.leftAnchor.constraint(equalTo: bannerView.leftAnchor),
+                               safeAreaLayoutGuide.rightAnchor.constraint(equalTo: bannerView.rightAnchor)]
+            switch bannerViewPosition {
+            case .top:
+                constraints.append(safeAreaLayoutGuide.topAnchor.constraint(equalTo: bannerView.topAnchor))
+            case .bottom:
+                constraints.append(safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: bannerView.bottomAnchor))
+            default:
+                break
+            }
+            NSLayoutConstraint.activate(constraints)
         }
         else {
-            // In lower iOS versions, safe area is not available so we use
-            // bottom layout guide and view edges.
-            position(bannerView, fullWidthAtBottomOf: rootViewController.view)
-        }
-    }
-    
-    // MARK: - view positioning
-    @available (iOS 11, *)
-    private func position(_ bannerView: GADBannerView, fullWidthAtBottomOf safeAreaGuide: UILayoutGuide) {
-        // Position the banner. Stick it to the bottom of the Safe Area.
-        // Make it constrained to the edges of the safe area.
-        var constraints = [safeAreaGuide.leftAnchor.constraint(equalTo: bannerView.leftAnchor),
-                           safeAreaGuide.rightAnchor.constraint(equalTo: bannerView.rightAnchor)]
-        switch bannerViewPosition {
-        case .top:
-            constraints.append(safeAreaGuide.topAnchor.constraint(equalTo: bannerView.topAnchor))
-        case .bottom:
-            constraints.append(safeAreaGuide.bottomAnchor.constraint(equalTo: bannerView.bottomAnchor))
-        default:
-            break
-        }
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    private func position(_ bannerView: GADBannerView, fullWidthAtBottomOf view: UIView) {
-        view.addConstraint(NSLayoutConstraint(item: bannerView,
-                                              attribute: .leading,
-                                              relatedBy: .equal,
-                                              toItem: view,
-                                              attribute: .leading,
-                                              multiplier: 1,
-                                              constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: bannerView,
-                                              attribute: .trailing,
-                                              relatedBy: .equal,
-                                              toItem: view,
-                                              attribute: .trailing,
-                                              multiplier: 1,
-                                              constant: 0))
-        switch bannerViewPosition {
-        case .top:
-            view.addConstraint(NSLayoutConstraint(item: bannerView,
-                                                  attribute: .top,
-                                                  relatedBy: .equal,
-                                                  toItem: rootViewController.topLayoutGuide,
-                                                  attribute: .bottom,
-                                                  multiplier: 1,
-                                                  constant: 0))
-        case .bottom:
-            view.addConstraint(NSLayoutConstraint(item: bannerView,
-                                                  attribute: .bottom,
-                                                  relatedBy: .equal,
-                                                  toItem: rootViewController.bottomLayoutGuide,
-                                                  attribute: .top,
-                                                  multiplier: 1,
-                                                  constant: 0))
-        default:
-            break
+            let rootView = rootViewController.view!
+            rootView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                      attribute: .leading,
+                                                      relatedBy: .equal,
+                                                      toItem: rootView,
+                                                      attribute: .leading,
+                                                      multiplier: 1,
+                                                      constant: 0))
+            rootView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                      attribute: .trailing,
+                                                      relatedBy: .equal,
+                                                      toItem: rootView,
+                                                      attribute: .trailing,
+                                                      multiplier: 1,
+                                                      constant: 0))
+            switch bannerViewPosition {
+            case .top:
+                rootView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                          attribute: .top,
+                                                          relatedBy: .equal,
+                                                          toItem: rootViewController.topLayoutGuide,
+                                                          attribute: .bottom,
+                                                          multiplier: 1,
+                                                          constant: 0))
+            case .bottom:
+                rootView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                          attribute: .bottom,
+                                                          relatedBy: .equal,
+                                                          toItem: rootViewController.bottomLayoutGuide,
+                                                          attribute: .top,
+                                                          multiplier: 1,
+                                                          constant: 0))
+            default:
+                break
+            }
         }
     }
     
@@ -334,22 +322,28 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     
     // MARK: - Interstitial
     
-    private func createAndLoadInterstitial() {
-        interstitial = GADInterstitial(adUnitID: interstitialAdUnitID)
+    private func createAndLoadInterstitial() -> GADInterstitial {
+        let interstitial = GADInterstitial(adUnitID: interstitialAdUnitID)
         interstitial.delegate = self
         interstitial.load(GADRequest())
+        return interstitial
     }
     
-    func showInterstitial() {
+    private func present(_ interstitial: GADInterstitial, from rootViewController: UIViewController) {
         if interstitial.isReady {
             interstitial.present(fromRootViewController: rootViewController)
         }
     }
     
+    func presentInterstitial() {
+        guard let interstitial = interstitial else { return }
+        present(interstitial, from: rootViewController)
+    }
+    
     // MARK: - GADInterstitialDelegate
     
     func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        createAndLoadInterstitial()
+        interstitial = createAndLoadInterstitial()
     }
     
     func interstitial(_ ad: GADInterstitial, didFailToReceiveAdWithError error: GADRequestError) {

@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         
     }
     @IBAction func test2(_ sender: Any) {
-        AdmobManager.shared.showInterstitial()
+        AdmobManager.shared.presentInterstitial()
     }
     @IBAction func show(_ sender: Any) {
 //        AdmobManager.shared.showInterstitial()
