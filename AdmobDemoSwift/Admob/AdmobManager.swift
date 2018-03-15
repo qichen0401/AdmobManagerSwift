@@ -9,8 +9,7 @@
 /*
  to do:
  in debug mode, use test id
- return banner view on create small scrope
- crash when interstitial is nil
+ when orientation change, interstitial orientation not always right
  */
 
 import UIKit
@@ -40,11 +39,12 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     
     var rootViewBackgroundColor = UIColor.gray {
         didSet {
-            // will crash on rootView == nil
-            
             rootViewController.view.backgroundColor = rootViewBackgroundColor
         }
     }
+    
+    private let reachability = Reachability()!
+    private var isReachable = true
     
     func setup(applicationID: String,
                bannerAdUnitID: String,
@@ -74,6 +74,8 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillChangeStatusBarOrientation(notification:)), name: NSNotification.Name.UIApplicationWillChangeStatusBarOrientation, object: nil)
+        
+        reachabilityStart()
     }
     
     @objc private func applicationWillEnterForeground() {
@@ -86,12 +88,31 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         if isPortrait != newIsPortrait {
             bannerView.adSize = newIsPortrait ? kGADAdSizeSmartBannerPortrait : kGADAdSizeSmartBannerLandscape
         }
+    }
+    
+    private func reachabilityStart() {
+        reachability.whenReachable = { [unowned self] _ in
+            if self.isReachable == false {
+                self.isReachable = true
+                self.load(self.bannerView)
+                self.interstitial = self.createAndLoadInterstitial()
+            }
+        }
+        reachability.whenUnreachable = { [unowned self] _ in
+            self.isReachable = false
+        }
         
-        interstitial = createAndLoadInterstitial()
+        do {
+            try reachability.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
     }
     
     func stop() {
         NotificationCenter.default.removeObserver(self)
+        
+        reachability.stopNotifier()
         
         UIView.animate(withDuration: 0.5, animations: { [unowned self] in
             self.bannerView.alpha = 0
