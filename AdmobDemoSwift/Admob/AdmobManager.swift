@@ -70,9 +70,29 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         load(bannerView)
         
         interstitial = createAndLoadInterstitial()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillChangeStatusBarOrientation(notification:)), name: NSNotification.Name.UIApplicationWillChangeStatusBarOrientation, object: nil)
+    }
+    
+    @objc private func applicationWillEnterForeground() {
+        load(bannerView)
+        interstitial = createAndLoadInterstitial()
+    }
+    
+    @objc private func applicationWillChangeStatusBarOrientation(notification: NSNotification) {
+        let newIsPortrait = UIInterfaceOrientation(rawValue: (notification.userInfo![UIApplicationStatusBarOrientationUserInfoKey] as! NSNumber).intValue)!.isPortrait
+        if isPortrait != newIsPortrait {
+            bannerView.adSize = newIsPortrait ? kGADAdSizeSmartBannerPortrait : kGADAdSizeSmartBannerLandscape
+        }
+        
+        interstitial = createAndLoadInterstitial()
     }
     
     func stop() {
+        NotificationCenter.default.removeObserver(self)
+        
         UIView.animate(withDuration: 0.5, animations: { [unowned self] in
             self.bannerView.alpha = 0
         }, completion: { [unowned self] _ in
