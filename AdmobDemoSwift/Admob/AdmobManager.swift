@@ -25,7 +25,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     private var interstitialAdUnitID = "ca-app-pub-3940256099942544/4411468910"
     
     private var bannerView: GADBannerView!
-    private var bannerViewPosition: BannerViewPosition!
+    private var bannerViewPosition = BannerViewPosition.bottom
     
     enum BannerViewPosition {
         case top
@@ -48,12 +48,10 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     
     func setup(applicationID: String,
                bannerAdUnitID: String,
-               interstitialAdUnitID: String,
-               bannerViewPosition: BannerViewPosition = .bottom) {
+               interstitialAdUnitID: String) {
         self.applicationID = applicationID
         self.bannerAdUnitID = bannerAdUnitID
         self.interstitialAdUnitID = interstitialAdUnitID
-        self.bannerViewPosition = bannerViewPosition
     }
     
     func start() {

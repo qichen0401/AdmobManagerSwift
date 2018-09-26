@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6C915F75F6DD31242FAB7E68 /* Pods_AdmobDemoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29765E30C1BA7C28C952DEB4 /* Pods_AdmobDemoSwift.framework */; };
+		C04CF1B1215B152C00554105 /* AdmobTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C04CF1B0215B152C00554105 /* AdmobTabBarController.swift */; };
 		C073C6EE205A648700A1CC5D /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C073C6ED205A648700A1CC5D /* Reachability.swift */; };
 		C086307F20512AB9008AD714 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C086307E20512AB9008AD714 /* AppDelegate.swift */; };
 		C086308120512AB9008AD714 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C086308020512AB9008AD714 /* ViewController.swift */; };
@@ -21,6 +22,7 @@
 		29765E30C1BA7C28C952DEB4 /* Pods_AdmobDemoSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AdmobDemoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AB64C6AA0A822405403A159 /* Pods-AdmobDemoSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdmobDemoSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-AdmobDemoSwift/Pods-AdmobDemoSwift.release.xcconfig"; sourceTree = "<group>"; };
 		90C052157D9DEE387DBEFE78 /* Pods-AdmobDemoSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdmobDemoSwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AdmobDemoSwift/Pods-AdmobDemoSwift.debug.xcconfig"; sourceTree = "<group>"; };
+		C04CF1B0215B152C00554105 /* AdmobTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdmobTabBarController.swift; sourceTree = "<group>"; };
 		C073C6ED205A648700A1CC5D /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		C086307B20512AB9008AD714 /* AdmobDemoSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdmobDemoSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C086307E20512AB9008AD714 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				C086309020512BB7008AD714 /* AdmobManager.swift */,
+				C04CF1B0215B152C00554105 /* AdmobTabBarController.swift */,
 				C073C6ED205A648700A1CC5D /* Reachability.swift */,
 			);
 			path = Admob;
@@ -235,6 +238,7 @@
 			files = (
 				C086309120512BB7008AD714 /* AdmobManager.swift in Sources */,
 				C086308120512AB9008AD714 /* ViewController.swift in Sources */,
+				C04CF1B1215B152C00554105 /* AdmobTabBarController.swift in Sources */,
 				C073C6EE205A648700A1CC5D /* Reachability.swift in Sources */,
 				C086307F20512AB9008AD714 /* AppDelegate.swift in Sources */,
 			);

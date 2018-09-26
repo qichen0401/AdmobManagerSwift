@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         AdmobManager.shared.setup(applicationID: "ca-app-pub-3940256099942544~1458002511", bannerAdUnitID: "ca-app-pub-3940256099942544/2934735716",
-                                  interstitialAdUnitID: "ca-app-pub-3940256099942544/4411468910", bannerViewPosition: .bottom)
+                                  interstitialAdUnitID: "ca-app-pub-3940256099942544/4411468910")
         
         AdmobManager.shared.start()
         
