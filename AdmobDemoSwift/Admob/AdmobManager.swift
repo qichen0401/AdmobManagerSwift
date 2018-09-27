@@ -286,7 +286,10 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     }
     
     private func load(_ bannerView: GADBannerView) {
-        bannerView.load(GADRequest())
+        let request = GADRequest()
+        request.testDevices = ["32d006772c3f4d1f1f0fe6a9da84ec86"]
+        bannerView.load(request)
+//        bannerView.load(GADRequest())
     }
     
     private func add(_ bannerView: GADBannerView, to rootViewController: UIViewController) {
@@ -364,7 +367,9 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     private func createAndLoadInterstitial() -> GADInterstitial {
         let interstitial = GADInterstitial(adUnitID: interstitialAdUnitID)
         interstitial.delegate = self
-        interstitial.load(GADRequest())
+        let request = GADRequest()
+        request.testDevices = ["32d006772c3f4d1f1f0fe6a9da84ec86"]
+        interstitial.load(request)
         return interstitial
     }
     
