@@ -69,9 +69,9 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         
         interstitial = createAndLoadInterstitial()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillChangeStatusBarOrientation(notification:)), name: NSNotification.Name.UIApplicationWillChangeStatusBarOrientation, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AdmobManager.applicationWillChangeStatusBarOrientation(notification:)), name: UIApplication.willChangeStatusBarOrientationNotification, object: nil)
         
         reachabilityStart()
     }
@@ -82,7 +82,7 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
     }
     
     @objc private func applicationWillChangeStatusBarOrientation(notification: NSNotification) {
-        let newIsPortrait = UIInterfaceOrientation(rawValue: (notification.userInfo![UIApplicationStatusBarOrientationUserInfoKey] as! NSNumber).intValue)!.isPortrait
+        let newIsPortrait = UIInterfaceOrientation(rawValue: (notification.userInfo![UIApplication.statusBarOrientationUserInfoKey] as! NSNumber).intValue)!.isPortrait
         if isPortrait != newIsPortrait {
             bannerView.adSize = newIsPortrait ? kGADAdSizeSmartBannerPortrait : kGADAdSizeSmartBannerLandscape
         }
@@ -185,17 +185,17 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
         
         window.rootViewController = rootViewController
         
-        rootViewController.addChildViewController(childViewController)
+        rootViewController.addChild(childViewController)
         rootViewController.view.addSubview(childViewController.view)
-        childViewController.didMove(toParentViewController: rootViewController)
+        childViewController.didMove(toParent: rootViewController)
         
         window.makeKeyAndVisible()
     }
     
     private func restoreViewHierarchy() {
-        childViewController.willMove(toParentViewController: nil)
+        childViewController.willMove(toParent: nil)
         childViewController.view.removeFromSuperview()
-        childViewController.removeFromParentViewController()
+        childViewController.removeFromParent()
         
         window.rootViewController = childViewController
         window.makeKeyAndVisible()
@@ -220,8 +220,6 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
             case .bottom:
                 constraints.append(contentsOf: [childView.topAnchor.constraint(equalTo: rootView.topAnchor),
                                                 childView.bottomAnchor.constraint(equalTo: bannerView.topAnchor)])
-            default:
-                break
             }
             NSLayoutConstraint.activate(constraints)
         } else {
@@ -270,8 +268,6 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
                                                           attribute: .top,
                                                           multiplier: 1,
                                                           constant: 0))
-            default:
-                break
             }
         }
     }
@@ -305,8 +301,6 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
                 constraints.append(safeAreaLayoutGuide.topAnchor.constraint(equalTo: bannerView.topAnchor))
             case .bottom:
                 constraints.append(safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: bannerView.bottomAnchor))
-            default:
-                break
             }
             NSLayoutConstraint.activate(constraints)
         }
@@ -343,8 +337,6 @@ class AdmobManager: NSObject, GADBannerViewDelegate, GADInterstitialDelegate {
                                                           attribute: .top,
                                                           multiplier: 1,
                                                           constant: 0))
-            default:
-                break
             }
         }
     }

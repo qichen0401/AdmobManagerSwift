@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E7313BA82B24262B09E283FE2BD8BED6"
+               BlueprintIdentifier = "A7F266953D6CADB33460B9DE72A0289F"
                BuildableName = "Pods_AdmobDemoSwift.framework"
                BlueprintName = "Pods-AdmobDemoSwift"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -26,7 +26,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
@@ -37,7 +36,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -47,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E7313BA82B24262B09E283FE2BD8BED6"
+            BlueprintIdentifier = "A7F266953D6CADB33460B9DE72A0289F"
             BuildableName = "Pods_AdmobDemoSwift.framework"
             BlueprintName = "Pods-AdmobDemoSwift"
             ReferencedContainer = "container:Pods.xcodeproj">
