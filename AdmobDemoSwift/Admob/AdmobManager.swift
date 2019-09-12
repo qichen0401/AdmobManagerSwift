@@ -84,53 +84,11 @@ class AdmobManager: NSObject {
         
         UIView.animate(withDuration: 0.5, animations: { [unowned self] in
             self.bannerView.alpha = 0
-        }, completion: { [unowned self] _ in
-            self.bannerView.removeFromSuperview()
-            
-            UIView.animate(withDuration: 0.5, animations: { [unowned self] in
-                let childView = self.childViewController.view!
-                let rootView = self.rootViewController.view!
-                
-                childView.removeConstraints(childView.constraints)
-                
-                rootView.addConstraints([
-                    NSLayoutConstraint(item: childView,
-                                       attribute: .leading,
-                                       relatedBy: .equal,
-                                       toItem: rootView,
-                                       attribute: .leading,
-                                       multiplier: 1,
-                                       constant: 0),
-                    NSLayoutConstraint(item: childView,
-                                       attribute: .trailing,
-                                       relatedBy: .equal,
-                                       toItem: rootView,
-                                       attribute: .trailing,
-                                       multiplier: 1,
-                                       constant: 0),
-                    NSLayoutConstraint(item: childView,
-                                       attribute: .top,
-                                       relatedBy: .equal,
-                                       toItem: rootView,
-                                       attribute: .top,
-                                       multiplier: 1,
-                                       constant: 0),
-                    NSLayoutConstraint(item: childView,
-                                       attribute: .bottom,
-                                       relatedBy: .equal,
-                                       toItem: rootView,
-                                       attribute: .bottom,
-                                       multiplier: 1,
-                                       constant: 0)
-                    ])
-                    
-                rootView.layoutIfNeeded()
             }, completion: { [unowned self] _ in
                 self.restoreViewHierarchy()
                 
                 self.bannerView = nil
                 self.interstitial = nil
-            })
         })
     }
     
