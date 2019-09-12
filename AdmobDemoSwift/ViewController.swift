@@ -14,27 +14,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        view.backgroundColor = .yellow
-        
-//        AdmobManager.shared.rootViewController = self
-//        AdmobManager.shared.setup()
-        
     }
-    @IBAction func test2(_ sender: Any) {
+    @IBAction func presentInterstitial(_ sender: Any) {
         AdmobManager.shared.presentInterstitial()
     }
-    @IBAction func show(_ sender: Any) {
-//        AdmobManager.shared.showInterstitial()
-        
-        
+    @IBAction func stopAds(_ sender: Any) {
         AdmobManager.shared.stop()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 
 }
 

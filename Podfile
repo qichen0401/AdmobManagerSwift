@@ -6,6 +6,6 @@ target 'AdmobDemoSwift' do
   use_frameworks!
 
   # Pods for AdmobDemoSwift
-  pod 'Firebase/AdMob'
+  pod 'Google-Mobile-Ads-SDK'
 
 end

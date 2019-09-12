@@ -17,8 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        AdmobManager.shared.setup(applicationID: "ca-app-pub-3940256099942544~1458002511",
-                                  bannerAdUnitID: "ca-app-pub-3940256099942544/2934735716",
+        AdmobManager.shared.setup(bannerAdUnitID: "ca-app-pub-3940256099942544/2934735716",
                                   interstitialAdUnitID: "ca-app-pub-3940256099942544/4411468910")
         AdmobManager.shared.start()
         
