@@ -20,6 +20,8 @@ class AdmobManager: NSObject {
     
     static let shared = AdmobManager()
     
+    var testDevices = ["362fa10d17733bbd886c4df8409f02c2"]
+    
     func setup(bannerAdUnitID: String, interstitialAdUnitID: String) {
         self.bannerAdUnitID = bannerAdUnitID
         self.interstitialAdUnitID = interstitialAdUnitID
@@ -122,7 +124,7 @@ class AdmobManager: NSObject {
     
     private func load(_ bannerView: GADBannerView) {
         let request = GADRequest()
-        request.testDevices = ["32d006772c3f4d1f1f0fe6a9da84ec86"]
+        request.testDevices = testDevices
         bannerView.load(request)
 //        bannerView.load(GADRequest())
     }
@@ -280,7 +282,7 @@ class AdmobManager: NSObject {
         let interstitial = GADInterstitial(adUnitID: interstitialAdUnitID)
         interstitial.delegate = self
         let request = GADRequest()
-        request.testDevices = ["32d006772c3f4d1f1f0fe6a9da84ec86"]
+        request.testDevices = testDevices
         interstitial.load(request)
         return interstitial
     }
